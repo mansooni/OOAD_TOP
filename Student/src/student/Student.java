@@ -18,6 +18,7 @@ public class Student {
         // TODO code application logic here
         StudentFrame sf = new StudentFrame();
         sf.setVisible(true);
+
     }
     
 }

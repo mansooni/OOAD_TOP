@@ -36,6 +36,7 @@ public class Billing {
         String name = (String) list.getSelectedValue();
         int index = list.getSelectedIndex();
 
+        
         try {
             Class.forName("com.mysql.jdbc.Driver");
             conn = DriverManager.getConnection(url, id, password);
@@ -49,7 +50,7 @@ public class Billing {
         } catch (SQLException ex) {
             Logger.getLogger(Billing.class.getName()).log(Level.SEVERE, null, ex);
         }
-
+        
         list.remove(index);
         list.setModel(Model);
 
@@ -80,4 +81,6 @@ public class Billing {
             Logger.getLogger(LessonFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    
+
 }

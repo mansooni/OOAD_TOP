@@ -425,14 +425,14 @@ public class LessonFrame extends javax.swing.JFrame {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGap(182, 182, 182)
+                        .addGap(158, 158, 158)
+                        .addComponent(jLabel12))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGap(184, 184, 184)
                         .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGap(207, 207, 207)
-                        .addComponent(jButton1))
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGap(158, 158, 158)
-                        .addComponent(jLabel12)))
+                        .addGap(212, 212, 212)
+                        .addComponent(jButton1)))
                 .addContainerGap(203, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
@@ -602,7 +602,7 @@ public class LessonFrame extends javax.swing.JFrame {
         String query = openSearchText.getText().toLowerCase().toUpperCase();
         OpenSearch(query);
     }//GEN-LAST:event_openSearchTextKeyReleased
-//
+
     private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
         // TODO add your handling code here:
         billing.issued(NotIssuedList);
