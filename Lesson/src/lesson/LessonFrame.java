@@ -18,104 +18,105 @@ import javax.swing.table.TableRowSorter;
  * @author hak
  */
 public class LessonFrame extends javax.swing.JFrame {
+
     Billing billing = new Billing();
-    
+
     ResultSet rs = null;
     Statement stmt = null;
     Connection conn = null;
-    
+
     String url = "jdbc:mysql://113.198.235.232:23306/UIS_TOP";
     String id = "admin";
-    String password="123";
-    
+    String password = "123";
+
     public LessonFrame() {
         initComponents();
         addsTable();//등록 정보 테이블로 가져오기
         openTable(); //개설 정보 테이블로 가져오기
         billing.studentTable(NotIssuedList); // 청구서 미발급 명단 가져오기 
     }
-    
+
     //addTable에 데이터 값 넣기
-    void addsTable(){
-        try{
+    void addsTable() {
+        try {
             DefaultTableModel model = (DefaultTableModel) addTable.getModel();
             Class.forName("com.mysql.jdbc.Driver");
-            conn = DriverManager.getConnection(url, id,password);
+            conn = DriverManager.getConnection(url, id, password);
             stmt = conn.createStatement();
             rs = stmt.executeQuery("select * from classuser");
-            
-            while(rs.next()){
+
+            while (rs.next()) {
                 String classnum = rs.getString("classnum");
                 String classname = rs.getString("classname");
                 String classstu = rs.getString("classstu");
                 String classpre = rs.getString("classpre");
                 String classnumb = rs.getString("classnumb");
                 String classopen = rs.getString("classopen");
-                model.addRow(new Object[]{classnum,classname,classstu,classpre,classnumb,classopen});
+                model.addRow(new Object[]{classnum, classname, classstu, classpre, classnumb, classopen});
             }
             addTable.setModel(model);
-        }catch(SQLException ex3){
+        } catch (SQLException ex3) {
             JOptionPane.showMessageDialog(null, "드라이버 연결 실패");
-        }catch(ClassNotFoundException ex3){
+        } catch (ClassNotFoundException ex3) {
             System.out.println("");
-        }finally{
-            try{
+        } finally {
+            try {
                 //자원 반납
                 rs.close();
                 stmt.close();
                 conn.close();
-            }catch(SQLException ex3){
+            } catch (SQLException ex3) {
                 JOptionPane.showMessageDialog(null, "드라이버 연결 해제");
                 System.out.println("드라이버 연결 해제");
             }
         }
     }
+
     //개설 테이블에 데이터 가져오기
-    void openTable(){
-        try{
+    void openTable() {
+        try {
             DefaultTableModel model1 = (DefaultTableModel) openTable.getModel();
             Class.forName("com.mysql.jdbc.Driver");
             conn = DriverManager.getConnection(url, id, password);
             stmt = conn.createStatement();
             rs = stmt.executeQuery("SELECT * FROM open");
-            
-            while(rs.next()){
+
+            while (rs.next()) {
                 String classnum = rs.getString("classnumm");
                 String professor = rs.getString("professor");
                 String maxPeople = rs.getString("maxpeople");
                 String minPeople = rs.getString("minpeople");
-                model1.addRow(new Object[]{classnum,professor,maxPeople,minPeople});
+                model1.addRow(new Object[]{classnum, professor, maxPeople, minPeople});
             }
             openTable.setModel(model1);
             JOptionPane.showMessageDialog(null, "드라이버 연결 성공");
-        }catch(SQLException ex4){
+        } catch (SQLException ex4) {
             JOptionPane.showMessageDialog(null, "드라이버 연결 실패");
-        }catch(ClassNotFoundException ex4){
+        } catch (ClassNotFoundException ex4) {
             System.out.println("");
-        }finally{
-            try{
+        } finally {
+            try {
                 //자원 반납
                 rs.close();
                 stmt.close();
                 conn.close();
-            }catch(SQLException ex3){
+            } catch (SQLException ex3) {
                 //JOptionPane.showMessageDialog(null, "드라이버 연결 해제");
                 System.out.println("드라이버 연결 해제");
             }
         }
     }
-   
-   
 
     //강좌 검색 
-    private void LessonSearch(String query){
+    private void LessonSearch(String query) {
         DefaultTableModel model = (DefaultTableModel) addTable.getModel();
         TableRowSorter<DefaultTableModel> tr = new TableRowSorter<DefaultTableModel>(model);
         addTable.setRowSorter(tr);
         tr.setRowFilter(RowFilter.regexFilter(query));
     }
+
     //개설 검색
-    private void OpenSearch(String query){
+    private void OpenSearch(String query) {
         DefaultTableModel model = (DefaultTableModel) openTable.getModel();
         TableRowSorter<DefaultTableModel> tr = new TableRowSorter<DefaultTableModel>(model);
         openTable.setRowSorter(tr);
@@ -472,18 +473,18 @@ public class LessonFrame extends javax.swing.JFrame {
     private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addButtonActionPerformed
         DefaultTableModel model = (DefaultTableModel) addTable.getModel();
         //TextField에 값이 입력되지 않았을 경우 
-        if(!numberText.getText().trim().equals("") && !nameText.getText().trim().equals("")
-            && !studentText.getText().trim().equals("") && !numbTextField.getText().trim().equals("")){        
-            InsertClass add = new InsertClass(numberText.getText(),nameText.getText(),studentText.getText(),
-                    preTextField.getText(),numbTextField.getText(),isOpenText.getText()); //DB 연동시키기.
-            if(add.getClassNumCheck(numberText.getText().toString())){//중복체킄함수
+        if (!numberText.getText().trim().equals("") && !nameText.getText().trim().equals("")
+                && !studentText.getText().trim().equals("") && !numbTextField.getText().trim().equals("")) {
+            InsertClass add = new InsertClass(numberText.getText(), nameText.getText(), studentText.getText(),
+                    preTextField.getText(), numbTextField.getText(), isOpenText.getText()); //DB 연동시키기.
+            if (add.getClassNumCheck(numberText.getText().toString())) {//중복체킄함수
                 add.ClassInsert(numberText.getText().toString()); //강좌 등록
-                model.addRow(new Object[]{numberText.getText(),nameText.getText(),studentText.getText(),
-                    preTextField.getText(),numbTextField.getText(),isOpenText.getText()});// 테이블 열에 값 넣기 
-            }else{ //중복된 강좌번호가 입력되었을때
+                model.addRow(new Object[]{numberText.getText(), nameText.getText(), studentText.getText(),
+                    preTextField.getText(), numbTextField.getText(), isOpenText.getText()});// 테이블 열에 값 넣기 
+            } else { //중복된 강좌번호가 입력되었을때
                 JOptionPane.showMessageDialog(null, "중복된 강좌 번호 있다.");
             }
-        }else{//텍스트 필드에ㅔ 값이 입력되지 않았을 경우
+        } else {//텍스트 필드에ㅔ 값이 입력되지 않았을 경우
             JOptionPane.showMessageDialog(null, "공백 불가");
         }
         //등록 후 텍스트 필드 초기화
@@ -497,21 +498,21 @@ public class LessonFrame extends javax.swing.JFrame {
 //강자 삭제
     private void delButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_delButtonActionPerformed
         DefaultTableModel model = (DefaultTableModel) addTable.getModel();
-        if(addTable.getSelectedRow()== -1){// 테이블 선택시 강좌에 데이터가 있을 경우!
-              if(addTable.getRowCount() ==0){    // 테이블 선택시 강좌에 데이터가 없을 경우
-                  JOptionPane.showMessageDialog(null, "데이터 값이 없다");
-              }else{
-                  // 삭제할 강좌를 선택하지 않은 경우
-                  JOptionPane.showMessageDialog(null, "삭제할 테이블 선택");
-              }
-        }else{
+        if (addTable.getSelectedRow() == -1) {// 테이블 선택시 강좌에 데이터가 있을 경우!
+            if (addTable.getRowCount() == 0) {    // 테이블 선택시 강좌에 데이터가 없을 경우
+                JOptionPane.showMessageDialog(null, "데이터 값이 없다");
+            } else {
+                // 삭제할 강좌를 선택하지 않은 경우
+                JOptionPane.showMessageDialog(null, "삭제할 테이블 선택");
+            }
+        } else {
             // 한 번도 개설되지 않은 강좌일 경우
-            if(model.getValueAt(addTable.getSelectedRow(), 5).toString().equals("N")){
-                InsertClass add = new InsertClass(numberText.getText(),nameText.getText(),studentText.getText(),
-                    preTextField.getText(),numbTextField.getText(),isOpenText.getText());
+            if (model.getValueAt(addTable.getSelectedRow(), 5).toString().equals("N")) {
+                InsertClass add = new InsertClass(numberText.getText(), nameText.getText(), studentText.getText(),
+                        preTextField.getText(), numbTextField.getText(), isOpenText.getText());
                 add.ClassDelete(); //삭제
                 model.removeRow(addTable.getSelectedRow());
-            }else{//개설된 강좌는 삭제 못한다. (Y)일 때 
+            } else {//개설된 강좌는 삭제 못한다. (Y)일 때 
                 JOptionPane.showMessageDialog(null, "개설된 강좌 삭제 불가");
             }
         }
@@ -526,7 +527,7 @@ public class LessonFrame extends javax.swing.JFrame {
 //테이블 클릭시 텍스트 필드에 값 나오게하기.
     private void addTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_addTableMouseClicked
         DefaultTableModel model = (DefaultTableModel) addTable.getModel();
-        
+
         numberText.setText(model.getValueAt(addTable.getSelectedRow(), 0).toString());
         nameText.setText(model.getValueAt(addTable.getSelectedRow(), 1).toString());
         studentText.setText(model.getValueAt(addTable.getSelectedRow(), 2).toString());
@@ -538,22 +539,22 @@ public class LessonFrame extends javax.swing.JFrame {
     private void editButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editButtonActionPerformed
         DefaultTableModel model = (DefaultTableModel) addTable.getModel();
         String classNum = numberText.getText().toString();//입력된 강좌 변수에 저장
-        if(model.getValueAt(addTable.getSelectedRow(), 5).toString().equals("N")){// 강좌가 한 번도 개설이 안된 경우
-            if(classNum.equals(model.getValueAt(addTable.getSelectedRow(), 0).toString())){//강좌번호랑 일치하지 않을 경우 수정된다. 일치하면 else문으로 넘어간다.
+        if (model.getValueAt(addTable.getSelectedRow(), 5).toString().equals("N")) {// 강좌가 한 번도 개설이 안된 경우
+            if (classNum.equals(model.getValueAt(addTable.getSelectedRow(), 0).toString())) {//강좌번호랑 일치하지 않을 경우 수정된다. 일치하면 else문으로 넘어간다.
                 model.setValueAt(nameText.getText(), addTable.getSelectedRow(), 1); //강좌ㅏ 이름
                 model.setValueAt(studentText.getText(), addTable.getSelectedRow(), 2); //담당 학과
                 model.setValueAt(preTextField.getText(), addTable.getSelectedRow(), 3); //설명
                 model.setValueAt(numbTextField.getText(), addTable.getSelectedRow(), 4); // 학점
                 model.setValueAt(isOpenText.getText(), addTable.getSelectedRow(), 5); //개설 유무
-                
-               InsertClass add = new InsertClass(numberText.getText(),nameText.getText(),studentText.getText(),
-                    preTextField.getText(),numbTextField.getText(),isOpenText.getText());
-               add.ClassUpdate();//수정
-            }else {
+
+                InsertClass add = new InsertClass(numberText.getText(), nameText.getText(), studentText.getText(),
+                        preTextField.getText(), numbTextField.getText(), isOpenText.getText());
+                add.ClassUpdate();//수정
+            } else {
                 JOptionPane.showMessageDialog(null, "강좌번호 변경 불가");
             }
-        }else{
-                JOptionPane.showMessageDialog(null, "개설된 강좌 수정 불가");
+        } else {
+            JOptionPane.showMessageDialog(null, "개설된 강좌 수정 불가");
         }
         //수정 후 텍스트 필드 값 초기화 
         numberText.setText("");
@@ -565,27 +566,34 @@ public class LessonFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_editButtonActionPerformed
 //개설 버튼
     private void isOpenButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_isOpenButtonActionPerformed
-        if(addTable.getSelectedRow() != -1){
-             jTabbedPane1.setSelectedIndex(1); //개설 버튼 클릭시 탭이동
-            }else{
+        DefaultTableModel model = (DefaultTableModel) addTable.getModel();
+        String isOpen = isOpenText.getText().toString();
+        System.out.println(isOpen);
+        if (isOpen.equals("Y")) {
+            JOptionPane.showMessageDialog(null, "개설된 강좌는 개설이 안됩니다");
+        } else {
+            if (addTable.getSelectedRow() != -1) {//선택시
+                jTabbedPane1.setSelectedIndex(1); //개설 버튼 클릭시 
+            } else {
                 JOptionPane.showMessageDialog(null, "개설할 강좌를 선택하시오.");
             }
+        }
     }//GEN-LAST:event_isOpenButtonActionPerformed
 //개설 완료 버튼
     private void clearTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearTextFieldActionPerformed
         DefaultTableModel model = (DefaultTableModel) addTable.getModel();//등록 테이블 가져오기
         DefaultTableModel model1 = (DefaultTableModel) openTable.getModel();//개설 테이블
-        
+
         //TextField 에 값이 비워져있는경우
-        if(!professorText.getText().trim().equals("")&& !maxText.getText().trim().equals("") 
-                && !minText.getText().trim().equals("")){
-            OpenClass open = new OpenClass(numberText.getText(),professorText.getText(),
+        if (!professorText.getText().trim().equals("") && !maxText.getText().trim().equals("")
+                && !minText.getText().trim().equals("")) {
+            OpenClass open = new OpenClass(numberText.getText(), professorText.getText(),
                     maxText.getText(), minText.getText());
             open.ClassOpen();//개설
-        
+
             model.setValueAt("Y", addTable.getSelectedRow(), 5);//개설시 insertTable classopen 값 N -> Y로 변경
-            model1.addRow(new Object[]{numberText.getText(),professorText.getText(),
-                    maxText.getText(), minText.getText()});
+            model1.addRow(new Object[]{numberText.getText(), professorText.getText(),
+                maxText.getText(), minText.getText()});
         }
         //개설 후 텍스트 필드 데이터 초기화
         professorText.setText("");
@@ -608,7 +616,6 @@ public class LessonFrame extends javax.swing.JFrame {
         billing.issued(NotIssuedList);
     }//GEN-LAST:event_jButton1MouseClicked
 
-   
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
