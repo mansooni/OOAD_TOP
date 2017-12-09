@@ -17,6 +17,7 @@ import javax.swing.table.TableColumn;
 public class professorFrame extends javax.swing.JFrame {
     professorManager pm = new professorManager();
     int flag = 1;
+    String move;
     /**
      * Creates new form professorFrame
      */
@@ -71,7 +72,7 @@ public class professorFrame extends javax.swing.JFrame {
                 java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, true
+                true, false, true
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -89,6 +90,11 @@ public class professorFrame extends javax.swing.JFrame {
         }
 
         jButton1.setText("성적 입력");
+        jButton1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton1MouseClicked(evt);
+            }
+        });
 
         jLabel1.setFont(new java.awt.Font("굴림", 1, 14)); // NOI18N
         jLabel1.setText("[ 담당 과목 ]");
@@ -162,13 +168,22 @@ public class professorFrame extends javax.swing.JFrame {
 
     private void classlistMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_classlistMouseClicked
         // TODO add your handling code here:
-        int move = classlist.getSelectedIndex();
+        String move = classlist.getSelectedValue();
         
         if(flag == 1){
-            pm.getnamelist(classlist, scoretable);
+            pm.getnamelist(move, scoretable);
         }
         flag++;
+        
+        
     }//GEN-LAST:event_classlistMouseClicked
+
+    private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
+        // TODO add your handling code here:
+        String move = classlist.getSelectedValue();
+        
+        pm.inputscore(move, scoretable);
+    }//GEN-LAST:event_jButton1MouseClicked
 
     /**
      * @param args the command line arguments
