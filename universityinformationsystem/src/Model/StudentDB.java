@@ -61,6 +61,11 @@ public class StudentDB extends DBSystem {
 
                   st.executeUpdate(sql);
                   System.out.println("추가");
+                  
+                  sql ="insert into USER values("
+                                     + ProjectHelper.addQuotationStr(id)+",  "
+                                     + ProjectHelper.addQuotationStr(residentno1)+")";
+                  st.executeUpdate(sql);
       } catch (Exception e) {
           e.printStackTrace();
           return null;
