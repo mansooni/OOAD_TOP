@@ -5,15 +5,18 @@
  */
 package controller;
 
+import Model.LoginSystem;
 import Model.ProfessorManager;
 import java.util.ArrayList;
+import universityinformationsystem.LoginInfo;
 /**
  *
  * @author gawon
  */
 public class ProfessorHandler {
-    private ProfessorManager pm;
     String id;
+    private ProfessorManager pm;
+
     
     public ProfessorHandler(String id) {
         this.id = id;
@@ -22,7 +25,7 @@ public class ProfessorHandler {
 
 
     public ArrayList getAttendance(){
-        return pm.getAttendance();
+        return pm.getAttendance(id);
     }
     
     public ArrayList getnamelist(String class_id){

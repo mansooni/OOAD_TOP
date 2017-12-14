@@ -22,10 +22,11 @@ import javax.swing.table.TableColumn;
  * @author gawon
  */
 public class ProfessorFrame extends javax.swing.JFrame {
-    String id=null;
-    String cid;
-    ProfessorHandler pH;
 
+    
+    String cid;
+    String id;
+ProfessorHandler pH;
     /**
      * Creates new form professorFrame
      */

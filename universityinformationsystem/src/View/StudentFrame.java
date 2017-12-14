@@ -7,7 +7,7 @@ package View;
 
 import javax.swing.JOptionPane;
 import Model.StudentManager;
-import controller.CourseManagementHandler;
+import controller.StudentHandler;
 import java.util.ArrayList;
 import javax.swing.table.DefaultTableModel;
 import universityinformationsystem.ErrorCode;
@@ -18,7 +18,7 @@ import universityinformationsystem.Scoreinfo;
  * @author gawon
  */
 public class StudentFrame extends javax.swing.JFrame {
-    CourseManagementHandler cmh;
+    StudentHandler cmh;
     String id;
     double curCredit;
     private String class_colNames[]={"강좌번호","강좌이름","학점","담당학과","과목개요","교수"};
@@ -48,7 +48,7 @@ public class StudentFrame extends javax.swing.JFrame {
      */
     public StudentFrame(String id) {
         this.id = id;
-        cmh = new CourseManagementHandler(id);
+        cmh = new StudentHandler(id);
         initComponents();  
         ArrayList <String[]> infoarray = cmh.getOpenClass();
         for(String[] s:infoarray){

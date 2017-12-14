@@ -10,6 +10,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.DefaultListModel;
+import javax.swing.JList;
 import universityinformationsystem.DBSystem;
 
 /**
@@ -19,14 +21,13 @@ import universityinformationsystem.DBSystem;
 public class ProfessorManager extends DBSystem {
 
     ResultSet rs = null;
-   String id;    
+    String id;
 
     public ProfessorManager(String id) {
         this.id = id;
     }
-    
    
-    public ArrayList getAttendance(){
+    public ArrayList getAttendance(String prof_id){
         ArrayList<String[]> infoArray = new ArrayList<>();
         try {
 
@@ -72,19 +73,16 @@ public class ProfessorManager extends DBSystem {
 
     public boolean inputscore(String class_id, ArrayList stud_id, ArrayList grade, int row) {
 
-        try {
-
-            for (int count = 0; count < row; count++) {
-                if (grade.get(count) != "N") {
-                    String inputdata = "update TAKES set GRADE='" + grade.get(count) + "' where STUD_ID='" + stud_id.get(count) + "'and CLASS_ID='" + class_id + "'";
+        for (int count = 0; count < row; count++) {
+            if (grade.get(count) != "N") {
+                String inputdata = "update TAKES set GRADE='" + grade.get(count) + "' where STUD_ID='" + stud_id.get(count) + "'and CLASS_ID='" + class_id + "'";
+                try {
                     st.executeUpdate(inputdata);
+                } catch (SQLException ex) {
+                    Logger.getLogger(ProfessorManager.class.getName()).log(Level.SEVERE, null, ex);
                 }
-
             }
 
-        } catch (SQLException ex) {
-            Logger.getLogger(ProfessorManager.class.getName()).log(Level.SEVERE, null, ex);
-            return false;
         }
         return true;
     }

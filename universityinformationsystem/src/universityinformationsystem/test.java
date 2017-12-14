@@ -5,11 +5,7 @@
  */
 package universityinformationsystem;
 
-import View.ClassManagerFrame;
-import View.JobManagementFrame;
-import View.LoginMainFrame;
-import View.LoginMainFrame;
-import View.StudentFrame;
+import View.LoginFrame;
 import java.sql.SQLException;
 
 /**
@@ -18,7 +14,7 @@ import java.sql.SQLException;
  */
 public class test {
    public static void main(String args[]) throws SQLException  {
-  new LoginMainFrame().setVisible(true);
+        new LoginFrame().setVisible(true);
      }
        
 }

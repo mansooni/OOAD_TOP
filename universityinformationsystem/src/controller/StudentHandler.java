@@ -14,10 +14,10 @@ import universityinformationsystem.Scoreinfo;
  *
  * @author pk-dohyeon
  */
-public class CourseManagementHandler{
+public class StudentHandler{
     String id;
     StudentManager sm;
-    public CourseManagementHandler(String id) {
+    public StudentHandler(String id) {
         this.id = id;
         sm = new StudentManager(id);
     }
