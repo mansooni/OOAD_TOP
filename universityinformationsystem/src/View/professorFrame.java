@@ -7,6 +7,7 @@ package View;
 
 import Model.*;
 import controller.professorHandler;
+import java.awt.List;
 import java.util.ArrayList;
 import java.util.Iterator;
 import javax.swing.DefaultCellEditor;
@@ -214,7 +215,8 @@ public class professorFrame extends javax.swing.JFrame {
     private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
         // TODO add your handling code here:
         DefaultTableModel tModel = (DefaultTableModel) scoretable.getModel();
-        String stud_id[] = {}, grade[] = {};
+        ArrayList<String> stud_id =new ArrayList<String>();
+        ArrayList<String> grade= new ArrayList<String>();
         String cid = null;
         String name = classlist.getSelectedValue();
         
@@ -229,10 +231,12 @@ public class professorFrame extends javax.swing.JFrame {
         }
         System.out.println(cid);
         
-        for (int i = 0; i <= tModel.getRowCount(); i++) {
-            stud_id[i] = tModel.getValueAt(i, 1).toString();
-            grade[i] = tModel.getValueAt(i, 3).toString();
-            System.out.println(stud_id[i]+" : "+grade[i]);
+        
+        
+        for (int i = 0; i <tModel.getRowCount(); i++) {
+            stud_id.add(tModel.getValueAt(i, 1).toString());
+            grade.add(tModel.getValueAt(i, 3).toString());
+            System.out.println(stud_id.get(i)+" : "+grade.get(i));
         }
         
         pH.inputscore(cid, stud_id, grade, tModel.getRowCount());

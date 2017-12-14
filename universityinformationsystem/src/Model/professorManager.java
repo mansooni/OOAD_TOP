@@ -70,13 +70,13 @@ public class professorManager extends DBSystem {
         return infoArray;
     }
 
-    public boolean inputscore(String class_id, String[] stud_id, String[] grade, int row) {
+    public boolean inputscore(String class_id, ArrayList stud_id, ArrayList grade, int row) {
 
         try {
 
             for (int count = 0; count < row; count++) {
-                if (grade[count] != "N") {
-                    String inputdata = "update TAKES set GRADE='" + grade[count] + "' where STUD_ID='" + stud_id[count] + "'and CLASS_ID='" + class_id + "'";
+                if (grade.get(count) != "N") {
+                    String inputdata = "update TAKES set GRADE='" + grade.get(count) + "' where STUD_ID='" + stud_id.get(count) + "'and CLASS_ID='" + class_id + "'";
                     st.executeUpdate(inputdata);
                 }
 

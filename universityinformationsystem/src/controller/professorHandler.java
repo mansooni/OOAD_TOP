@@ -32,7 +32,7 @@ public class professorHandler {
         return pm.getnamelist(class_id);
     }
     
-    public boolean inputscore(String class_id, String[] stud_id, String[] grade, int row){
+    public boolean inputscore(String class_id, ArrayList stud_id, ArrayList grade, int row){
         return pm.inputscore(class_id, stud_id, grade, row);
     }
 }
