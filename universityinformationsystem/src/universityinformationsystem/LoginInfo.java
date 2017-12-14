@@ -10,6 +10,6 @@ package universityinformationsystem;
  * @author pk-dohyeon
  */
 public class LoginInfo {
-    public String id;
+    public static String id;
     public int state;
 }
