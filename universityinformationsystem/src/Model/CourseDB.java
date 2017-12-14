@@ -5,6 +5,7 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import universityinformationsystem.DBSystem;
+import universityinformationsystem.ErrorCode;
 import universityinformationsystem.ProjectHelper;
 
 public class CourseDB extends DBSystem{
@@ -26,15 +27,15 @@ public class CourseDB extends DBSystem{
                       String temp [] = {course_id,course_name,course_description,credit,dept_name,chk};
                       infoArray.add(temp);
                   }
-      }catch(Exception e){e.printStackTrace(); disconnectDB();return null;}
+      }catch(SQLException ex){ex.printStackTrace();;return null;}
       return infoArray;
   }
 
   public String[] addCourse(String coursename, String description, String credit, String dept) {
       String deptno=null,id="";
       String sql=null;
-      if(coursename.isEmpty()){
-           System.out.println("이름을 입력해주세요");
+      if(coursename.isEmpty() || description.isEmpty() || credit.isEmpty()){
+           System.out.println("빈칸을 채워주세요");
            return null;
        }
       try{
@@ -65,12 +66,11 @@ public class CourseDB extends DBSystem{
                                      +ProjectHelper.addQuotationStr("N")+","
                                      +ProjectHelper.addQuotationStr(deptno)+")";
                             
-
+                    
                   st.executeUpdate(sql);
                   System.out.println("추가");
-      } catch (Exception e) {
-          e.printStackTrace();
-          disconnectDB();
+      } catch (NumberFormatException | SQLException ex) {
+          ex.printStackTrace();
           return null;
       }
       String[] info = {id,coursename,description,credit,dept,"N"};
@@ -78,22 +78,20 @@ public class CourseDB extends DBSystem{
       
   }
 
-  public boolean deleteCourse(String no) {
+  public ErrorCode deleteCourse(String no) {
       String sql=null;
                        sql= "delete from COURSE where course_id = "+ProjectHelper.addQuotationStr(no); 
             try {
                 st.executeUpdate(sql);
+                return ErrorCode.NOMAL;
             } catch (SQLException ex) {
-                ex.printStackTrace();disconnectDB(); return false;
+                ex.printStackTrace();disconnectDB(); return ErrorCode.NORMALERROR;
             }
-       return true;
+       
   }
 
-  public boolean updatecourse(String courseno, String coursename, String description, String credit, String dept) {
-      if(coursename.isEmpty()){
-           System.out.println("이름을 입력해주세요");
-           return false;
-       }
+  public ErrorCode updatecourse(String courseno, String coursename, String description, String credit, String dept) {
+     
         String deptno;
         String sql=null;
         try{
@@ -109,7 +107,7 @@ public class CourseDB extends DBSystem{
                                      
                                      +"where course_id = "+ProjectHelper.addQuotationStr(courseno);
             st.executeUpdate(sql);
-        }catch(Exception ex){ex.printStackTrace(); return false;}
-        return true;
+            return ErrorCode.NOMAL;
+        }catch(SQLException ex){ex.printStackTrace(); return ErrorCode.NORMALERROR;}
   }
 }

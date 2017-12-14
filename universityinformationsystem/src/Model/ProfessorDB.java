@@ -4,6 +4,7 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import universityinformationsystem.DBSystem;
+import universityinformationsystem.ErrorCode;
 import universityinformationsystem.ProjectHelper;
 
 
@@ -54,9 +55,21 @@ public class ProfessorDB extends DBSystem {
                             
 
                   st.executeUpdate(sql);
-                  System.out.println("추가");
-      } catch (Exception e) {
-          e.printStackTrace();
+                  sql ="insert into USER values("
+                                     + ProjectHelper.addQuotationStr(id)+",  "
+                                     + ProjectHelper.addQuotationStr(residentno2)+")";
+                  st.executeUpdate(sql);
+                  System.out.println("교수 추가");
+      } catch (SQLException ex) {
+          while (ex != null) {
+                                System.out.println ("SQLState: " + ex.getSQLState());  //Retrieves the SQLState for thisSQLExceptionobject
+                                System.out.println ("Message:  " + ex.getMessage());
+                                System.out.println ("Vendor:   " + ex.getErrorCode());
+                             if(ex.getErrorCode()  == 1062){
+                                   System.err.println("중복된 주민번호가 있습니다. : " + ex.getErrorCode());
+                               }
+                                ex = ex.getNextException();  //Adds anSQLExceptionobject to the end of the chain.
+                        }
           return null;
       }
       String[] info = {id,name,residentno,dept};
@@ -64,31 +77,43 @@ public class ProfessorDB extends DBSystem {
       return info;
   }
 
-  public boolean deleteProfessor(String no) {
+  public ErrorCode deleteProfessor(String no) {
             String sql=null;
                        sql= "delete from PROFESSOR where prof_id = "+ProjectHelper.addQuotationStr(no); 
             try {
                 st.executeUpdate(sql);
+                sql ="delete from USER where id = "
+                                     + ProjectHelper.addQuotationStr(no);
+                  st.executeUpdate(sql);
+                return ErrorCode.NOMAL;
             } catch (SQLException ex) {
-                ex.printStackTrace(); return false;
+                        while (ex != null) {
+                                System.out.println ("SQLState: " + ex.getSQLState());  //Retrieves the SQLState for thisSQLExceptionobject
+                                System.out.println ("Message:  " + ex.getMessage());
+                                System.out.println ("Vendor:   " + ex.getErrorCode());
+                             if(ex.getErrorCode()  == 1451){
+                                   return ErrorCode.ENROLLCLASSPROFESSOR;
+                               }
+                                ex = ex.getNextException();  //Adds anSQLExceptionobject to the end of the chain.
+                        }
+                return ErrorCode.NORMALERROR;
             }
-      return true;
   }
 
-  public boolean updateProfessor(String no, String name, String residentno1,String residentno2, String dept) {
+  public ErrorCode updateProfessor(String no, String name, String residentno1,String residentno2, String dept) {
         if(name.isEmpty()){
            System.out.println("이름을 입력해주세요");
-           return false;
+           return ErrorCode.UPDATEERROR;
        }
        if(!residentno1.matches("[(0-9)]{6}")){
            System.out.println("앞자리 번호 6자리 입력해주세요");
-           return false;
+           return ErrorCode.UPDATEERROR;
        }
        
        
        if(!residentno2.matches("[(0-9)]{7}")){
            System.out.println("뒷자리 번호 6자리 입력해주세요");
-           return false;
+           return ErrorCode.UPDATEERROR;
        }
         String residentno = residentno1 + "-" + residentno2;
         String deptno;
@@ -104,8 +129,13 @@ public class ProfessorDB extends DBSystem {
                                      +"residentno = " + ProjectHelper.addQuotationStr(residentno)+" "
                                      +"where prof_id = "+ProjectHelper.addQuotationStr(no);
             st.executeUpdate(sql);
-        }catch(Exception ex){ex.printStackTrace(); return false;}
-        return true;
+             return ErrorCode.NOMAL;
+        }catch(SQLException ex){
+                System.out.println ("SQLState: " + ex.getSQLState());  //Retrieves the SQLState for thisSQLExceptionobject
+                System.out.println ("Message:  " + ex.getMessage());
+                System.out.println ("Vendor:   " + ex.getErrorCode()); 
+            return ErrorCode.UPDATEERROR;
+        }
   }
 
   public ArrayList inquiryProfessor(String no, String name) {
@@ -122,8 +152,14 @@ public class ProfessorDB extends DBSystem {
                       String temp [] = {prof_id,prof_name,residentno,dept_name};
                       infoArray.add(temp);
                   }
-      }catch(Exception e){e.printStackTrace(); return null;}
-      return infoArray;
+        return infoArray;
+      }catch(SQLException ex){
+             System.out.println ("SQLState: " + ex.getSQLState());  //Retrieves the SQLState for thisSQLExceptionobject
+             System.out.println ("Message:  " + ex.getMessage());
+             System.out.println ("Vendor:   " + ex.getErrorCode()); 
+          return null;
+      }
+      
   }
   
     public ArrayList inquiryProfessor_dept(String dept) {
@@ -137,7 +173,11 @@ public class ProfessorDB extends DBSystem {
                       String temp = prof_id + ", " + prof_name;
                       info.add(temp);
                   }
-      }catch(Exception e){e.printStackTrace(); return null;}
-      return info;
+                  return info;
+      }catch(SQLException ex){                               
+                                System.out.println ("SQLState: " + ex.getSQLState());  //Retrieves the SQLState for thisSQLExceptionobject
+                                System.out.println ("Message:  " + ex.getMessage());
+                                System.out.println ("Vendor:   " + ex.getErrorCode()); 
+                                return null;}
   }
 }

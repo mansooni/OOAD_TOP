@@ -9,7 +9,9 @@ import controller.*;
 import static java.lang.System.exit;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import universityinformationsystem.ErrorCode;
 
 /**
  *
@@ -25,14 +27,29 @@ public class JobManagementFrame extends javax.swing.JFrame {
     private String residentno[];
     /**
      * Creates new form BachelorManageementHandler
+     * @throws java.sql.SQLException
      */
     public JobManagementFrame() throws SQLException {
-        studModel = new DefaultTableModel(stud_colNames,0);
-        profModel = new DefaultTableModel(prof_colNames,0);
+        studModel = new DefaultTableModel(stud_colNames,0){
+            @Override
+            public boolean isCellEditable(int row, int column){
+                return false;
+            }
+        };
+        profModel = new DefaultTableModel(prof_colNames,0){
+            @Override
+            public boolean isCellEditable(int row, int column){
+                return false;
+            }
+        };
         initComponents();
-        jh = new JobManagementHandler();
+            jh = new JobManagementHandler();
+            ArrayList <String[]> infoArray;
+        infoArray = jh.inquiryStudent("","");
+        for(String[] s: infoArray)
+            studModel.addRow(s);
     }
-
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -373,11 +390,29 @@ public class JobManagementFrame extends javax.swing.JFrame {
 
     private void tap_BachelorStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_tap_BachelorStateChanged
         // TODO add your handling code here:
+        if(tap_Bachelor.getSelectedIndex() == 1){
+            profModel = new DefaultTableModel(prof_colNames,0){
+            @Override
+            public boolean isCellEditable(int row, int column){
+                return false;
+            }
+        };
+        ArrayList <String[]> infoArray;
+        infoArray = jh.inquiryProfessor("","");
+        for(String[] s: infoArray)
+            profModel.addRow(s);
+        jTable_Professor.setModel(profModel);
+        }
     }//GEN-LAST:event_tap_BachelorStateChanged
 
     private void jButton_PinquiryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_PinquiryActionPerformed
         // TODO add your handling code here:
-        profModel = new DefaultTableModel(prof_colNames,0);
+        profModel = new DefaultTableModel(prof_colNames,0){
+            @Override
+            public boolean isCellEditable(int row, int column){
+                return false;
+            }
+        };
         ArrayList <String[]> infoArray;
         infoArray = jh.inquiryProfessor(jTextField_Pino.getText(),jTextField_Piname.getText());
         for(String[] s: infoArray)
@@ -409,7 +444,12 @@ public class JobManagementFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton_closeActionPerformed
 
     private void jButton_SinquiryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_SinquiryActionPerformed
-        studModel = new DefaultTableModel(stud_colNames,0);
+        studModel = new DefaultTableModel(stud_colNames,0){
+            @Override
+            public boolean isCellEditable(int row, int column){
+                return false;
+            }
+        };
         ArrayList <String[]> infoArray;
         infoArray = jh.inquiryStudent(jTextField_Sino.getText(),jTextField_Siname.getText());
         for(String[] s: infoArray)
@@ -420,13 +460,15 @@ public class JobManagementFrame extends javax.swing.JFrame {
 
     private void jButton_SupdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_SupdateActionPerformed
 
-    if(jh.updateStudent(no, jTextField_Sname.getText(),jTextField_Sresidentno1.getText(),jTextField_Sresidentno2.getText(),(String)jComboBox_Sdept.getSelectedItem())){
+    ErrorCode e =jh.updateStudent(no, jTextField_Sname.getText(),jTextField_Sresidentno1.getText(),jTextField_Sresidentno2.getText(),(String)jComboBox_Sdept.getSelectedItem());
+   if(e == ErrorCode.NOMAL) {
         String temp = jTextField_Sresidentno1.getText() + "-" + jTextField_Sresidentno2.getText();
         studModel.setValueAt(no, row, 0);
         studModel.setValueAt(name, row, 1);
         studModel.setValueAt(temp, row, 2);
         studModel.setValueAt((String)jComboBox_Sdept.getSelectedItem(), row, 3);
     }
+   else JOptionPane.showMessageDialog(null, e.getDesc());
     }//GEN-LAST:event_jButton_SupdateActionPerformed
 
     private void jButton_SaddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_SaddActionPerformed
@@ -435,16 +477,16 @@ public class JobManagementFrame extends javax.swing.JFrame {
         if(info != null){
             studModel.addRow(info);
         }
-        else System.out.println("등록 오류");
+        else JOptionPane.showMessageDialog(null, "등록오류");
         
     }//GEN-LAST:event_jButton_SaddActionPerformed
 
     private void jButton_SremoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_SremoveActionPerformed
 
-            boolean deletechk = jh.deleteStudent(no);
-            if(deletechk) 
+            ErrorCode e = jh.deleteStudent(no);
+            if(e == ErrorCode.NOMAL) 
                 studModel.removeRow(row);
-            
+            else JOptionPane.showMessageDialog(null, e.getDesc());
     }//GEN-LAST:event_jButton_SremoveActionPerformed
 
     private void jTable_StudentMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable_StudentMouseClicked
@@ -460,13 +502,14 @@ public class JobManagementFrame extends javax.swing.JFrame {
         jTextField_Sname.setText(name);
         jTextField_Sresidentno1.setText(residentno[0]);
         jTextField_Sresidentno2.setText(residentno[1]);
-
     }//GEN-LAST:event_jTable_StudentMouseClicked
 
     private void jButton_PdeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_PdeleteActionPerformed
-                    boolean deletechk = jh.deleteProfessor(no);
-            if(deletechk) 
+                    
+        ErrorCode e = jh.deleteProfessor(no);
+            if(e == ErrorCode.NOMAL) 
                 profModel.removeRow(row);
+            else JOptionPane.showMessageDialog(null, e.getDesc());
     }//GEN-LAST:event_jButton_PdeleteActionPerformed
 
     private void jButton_PaddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_PaddActionPerformed
@@ -475,18 +518,20 @@ public class JobManagementFrame extends javax.swing.JFrame {
         if(info != null){
             profModel.addRow(info);
         }
-        else System.out.println("등록 오류");
+        else JOptionPane.showMessageDialog(null, "등록오류");
     }//GEN-LAST:event_jButton_PaddActionPerformed
 
     private void jButton_PupdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_PupdateActionPerformed
         // TODO add your handling code here:
-            if(jh.updateProfessor(no, jTextField_Pname.getText(),jTextField_Presidentno1.getText(),jTextField_Presidentno2.getText(),(String)jComboBox_Pdept.getSelectedItem())){
+        ErrorCode e = jh.updateProfessor(no, jTextField_Pname.getText(),jTextField_Presidentno1.getText(),jTextField_Presidentno2.getText(),(String)jComboBox_Pdept.getSelectedItem());
+        if(e == ErrorCode.NOMAL){
         String temp = jTextField_Presidentno1.getText() + "-" + jTextField_Presidentno2.getText();
         profModel.setValueAt(no, row, 0);
         profModel.setValueAt(jTextField_Pname.getText(), row, 1);
         profModel.setValueAt(temp, row, 2);
         profModel.setValueAt((String)jComboBox_Pdept.getSelectedItem(), row, 3);
        }
+        else JOptionPane.showMessageDialog(null, e.getDesc());
     }//GEN-LAST:event_jButton_PupdateActionPerformed
 
 

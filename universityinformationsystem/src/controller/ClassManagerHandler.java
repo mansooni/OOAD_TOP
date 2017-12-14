@@ -2,6 +2,7 @@ package controller;
 
 import Model.*;
 import java.util.ArrayList;
+import universityinformationsystem.ErrorCode;
 
 
 public class ClassManagerHandler {
@@ -25,11 +26,11 @@ public class ClassManagerHandler {
 
   }
 
-  public boolean deleteCourse(String no) {
+  public ErrorCode deleteCourse(String no) {
       return co.deleteCourse(no);
   }
 
-  public boolean updateClass(String courseno, String coursename, String description, String credit, String dept) {
+  public ErrorCode updateClass(String courseno, String coursename, String description, String credit, String dept) {
       return co.updatecourse(courseno, coursename, description, credit, dept);
   }
 public ArrayList inquiryProfessor_dept(String dept){
@@ -39,7 +40,7 @@ public ArrayList inquiryProfessor_dept(String dept){
   public ArrayList getClassData(String no) {
       return cl.getClassData(no);
   }
-  public boolean openClass(String courseno, String profno, String minenroll, String maxenroll) {
+  public ErrorCode openClass(String courseno, String profno, String minenroll, String maxenroll) {
     return cl.openClass(courseno, profno, minenroll, maxenroll);
   }
 

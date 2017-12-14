@@ -8,12 +8,14 @@ package View;
 import controller.ClassManagerHandler;
 import java.util.ArrayList;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JOptionPane;
+import universityinformationsystem.ErrorCode;
 
 /**
  *
  * @author pk-dohyeon
  */
-public class NewJFrame extends javax.swing.JFrame {
+public class OpenClassFrame extends javax.swing.JFrame {
     DefaultComboBoxModel<String>Model;
     ClassManagerHandler cmh; 
     String courseno;
@@ -21,7 +23,7 @@ public class NewJFrame extends javax.swing.JFrame {
     /**
      * Creates new form NewJFrame
      */
-    public NewJFrame(String courseno, String name, String deptname, ClassManagerHandler cmh, ClassManagerFrame cmf) {
+    public OpenClassFrame(String courseno, String name, String deptname, ClassManagerHandler cmh, ClassManagerFrame cmf) {
         this.cmh = cmh;
         this.courseno = courseno;
         this.cmf = cmf;
@@ -128,10 +130,20 @@ public class NewJFrame extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
+              if( jTextField2.getText().isEmpty()){
+                  JOptionPane.showMessageDialog(null, "최소인원을 입력해주세요");
+           return;
+       }
+      if(jTextField3.getText().isEmpty()){
+           JOptionPane.showMessageDialog(null, "최대인원을 입력해주세요");
+           return;
+       }
         String[] temp = jComboBox_prof.getSelectedItem().toString().split(", ");
-        if(cmh.openClass(courseno, temp[0], jTextField2.getText(), jTextField3.getText()))
-        cmf.courseModel.setValueAt("Y", cmf.row, 5);
-        this.setVisible(false);
+        ErrorCode e = cmh.openClass(courseno, temp[0], jTextField2.getText(), jTextField3.getText());
+        if(e == ErrorCode.NOMAL){
+            cmf.courseModel.setValueAt("Y", cmf.row, 5);
+            this.setVisible(false);
+        } else JOptionPane.showMessageDialog(null, e);
     }//GEN-LAST:event_jButton1ActionPerformed
 
 

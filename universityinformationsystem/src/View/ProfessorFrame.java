@@ -3,27 +3,37 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package professor;
+package View;
 
+import Model.*;
+import controller.ProfessorHandler;
+import java.awt.List;
+import java.util.ArrayList;
+import java.util.Iterator;
 import javax.swing.DefaultCellEditor;
+import javax.swing.DefaultListModel;
 import javax.swing.JComboBox;
 import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 
 /**
  *
  * @author gawon
  */
-public class professorFrame extends javax.swing.JFrame {
-    professorManager pm = new professorManager();
-    int flag = 1;
-    String move;
+public class ProfessorFrame extends javax.swing.JFrame {
+    String id=null;
+    String cid;
+    ProfessorHandler pH;
+
     /**
      * Creates new form professorFrame
      */
-    public professorFrame() {
+    public ProfessorFrame(String id) {
+        this.id = id;
+        pH = new ProfessorHandler(id);
         initComponents();
-        pm.getAttendance(classlist);
+        getAttendance();
     }
 
     /**
@@ -65,14 +75,14 @@ public class professorFrame extends javax.swing.JFrame {
 
             },
             new String [] {
-                "학번", "이름", "성적"
+                "학과", "학번", "이름", "성적"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                true, false, true
+                false, false, false, true
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -85,7 +95,7 @@ public class professorFrame extends javax.swing.JFrame {
         });
         jScrollPane2.setViewportView(scoretable);
         if (scoretable.getColumnModel().getColumnCount() > 0) {
-            scoretable.getColumnModel().getColumn(2).setCellEditor(new DefaultCellEditor(jcb)
+            scoretable.getColumnModel().getColumn(3).setCellEditor(new DefaultCellEditor(jcb)
             );
         }
 
@@ -166,59 +176,85 @@ public class professorFrame extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    public void getAttendance() {
+        ArrayList<String[]> info;
+
+        DefaultListModel lModel = new DefaultListModel();
+        info = pH.getAttendance();
+
+        for (String[] s : info) {
+            lModel.addElement(s[1]);
+        }
+        classlist.setModel(lModel);
+    }
+
     private void classlistMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_classlistMouseClicked
         // TODO add your handling code here:
-        String move = classlist.getSelectedValue();
+        DefaultTableModel tModel = (DefaultTableModel) scoretable.getModel();
+        String cid = null;
+        String name = classlist.getSelectedValue();
         
-        if(flag == 1){
-            pm.getnamelist(move, scoretable);
+        
+       tModel.setNumRows(0);
+        
+        ArrayList <String[]> classid = pH.getAttendance();
+        
+        for (String[] s : classid) {
+           
+            if (s[1].equals(name)) {
+                cid = s[0];
+            }
         }
-        flag++;
-        
-        
+
+        ArrayList <String[]> namelist = pH.getnamelist(cid);
+
+        for (String[] s : namelist) {
+            tModel.addRow(s);
+        }
+        scoretable.setModel(tModel);
     }//GEN-LAST:event_classlistMouseClicked
 
     private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
         // TODO add your handling code here:
-        String move = classlist.getSelectedValue();
+        DefaultTableModel tModel = (DefaultTableModel) scoretable.getModel();
+        ArrayList<String> stud_id =new ArrayList<String>();
+        ArrayList<String> grade= new ArrayList<String>();
+        String cid = null;
+        String name = classlist.getSelectedValue();
         
-        pm.inputscore(move, scoretable);
+       
+        ArrayList <String[]> classid = pH.getAttendance();
+        
+        for (String[] s : classid) {
+           
+            if (s[1].equals(name)) {
+                cid = s[0];
+            }
+        }
+        System.out.println(cid);
+        
+        
+        
+        for (int i = 0; i <tModel.getRowCount(); i++) {
+            stud_id.add(tModel.getValueAt(i, 1).toString());
+            grade.add(tModel.getValueAt(i, 3).toString());
+            System.out.println(stud_id.get(i)+" : "+grade.get(i));
+        }
+        
+        pH.inputscore(cid, stud_id, grade, tModel.getRowCount());
+         tModel.setNumRows(0);
+         ArrayList <String[]> namelist = pH.getnamelist(cid);
+
+        for (String[] s : namelist) {
+            tModel.addRow(s);
+        }
+        scoretable.setModel(tModel);
     }//GEN-LAST:event_jButton1MouseClicked
 
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(professorFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(professorFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(professorFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(professorFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new professorFrame().setVisible(true);
-            }
-        });
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JList<String> classlist;

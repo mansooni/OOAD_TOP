@@ -1,10 +1,9 @@
 package controller;
 
 
-import java.util.Map;
-import universityinformationsystem.DBSystem;
 import Model.*;
 import java.util.ArrayList;
+import universityinformationsystem.ErrorCode;
 
 public class JobManagementHandler {
      private StudentDB sd;
@@ -22,24 +21,20 @@ public class JobManagementHandler {
       return pd.addProfessor(name, residentno1, residentno2, dept);
   }
 
-  public boolean deleteStudent(String no) {
+  public ErrorCode deleteStudent(String no) {
       return sd.deleteStudent(no);
   }
 
-  public boolean deleteProfessor(String no) {
+  public ErrorCode deleteProfessor(String no) {
       return pd.deleteProfessor(no);
   }
 
-  public boolean updateStudent(String no, String name, String residentno1,String residentno2, String dept) {
-      if(sd.updateStudent(no, name, residentno1, residentno2, dept))
-        return true;
-      else return false;
+  public ErrorCode updateStudent(String no, String name, String residentno1,String residentno2, String dept) {
+      return sd.updateStudent(no, name, residentno1, residentno2, dept);
   }
 
-  public boolean updateProfessor(String no, String name, String residentno1, String residentno2, String dept) {
-       if(pd.updateProfessor(no, name, residentno1, residentno2, dept))
-        return true;
-      else return false;
+  public ErrorCode updateProfessor(String no, String name, String residentno1, String residentno2, String dept) {
+       return pd.updateProfessor(no, name, residentno1, residentno2, dept);
   }
 
   public ArrayList inquiryStudent(String no, String name) {
