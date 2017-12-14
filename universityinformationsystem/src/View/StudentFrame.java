@@ -10,7 +10,7 @@ import Model.StudentManager;
 import controller.StudentHandler;
 import java.util.ArrayList;
 import javax.swing.table.DefaultTableModel;
-import universityinformationsystem.ErrorCode;
+import universityinformationsystem.ErrorState;
 import universityinformationsystem.Scoreinfo;
 
 /**
@@ -86,6 +86,7 @@ public class StudentFrame extends javax.swing.JFrame {
         jTable_MyClass = new javax.swing.JTable();
         jLabel12 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTable2 = new javax.swing.JTable();
@@ -155,6 +156,13 @@ public class StudentFrame extends javax.swing.JFrame {
             }
         });
 
+        jButton2.setText("암호변경");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -191,6 +199,8 @@ public class StudentFrame extends javax.swing.JFrame {
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jButton2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -219,8 +229,10 @@ public class StudentFrame extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel12)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 34, Short.MAX_VALUE))
+                .addContainerGap(16, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("수강신청", jPanel1);
@@ -287,11 +299,11 @@ public class StudentFrame extends javax.swing.JFrame {
     private void jTable_ClassMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable_ClassMouseClicked
         // TODO add your handling code here:
         if(evt.getClickCount()==2){
-            ErrorCode e;
+            ErrorState e;
             int row = jTable_Class.getSelectedRow();
             String class_id = (String)jTable_Class.getValueAt(row, 0);
             e = cmh.myClassEnrollment(class_id);
-           if(e == ErrorCode.NOMAL){
+           if(e == ErrorState.NOMAL){
                Object[] temp = {jTable_Class.getValueAt(row, 0),jTable_Class.getValueAt(row, 1),jTable_Class.getValueAt(row, 2),jTable_Class.getValueAt(row, 3),jTable_Class.getValueAt(row, 4)
                ,jTable_Class.getValueAt(row, 5)};
               myclass_Model.addRow(temp);
@@ -306,8 +318,8 @@ public class StudentFrame extends javax.swing.JFrame {
         if(evt.getClickCount()==2){
             int row = jTable_MyClass.getSelectedRow();
             String class_id = (String)jTable_MyClass.getValueAt(row, 0);
-           ErrorCode e = cmh.cancle(class_id);
-           if( e == ErrorCode.NOMAL){
+           ErrorState e = cmh.cancle(class_id);
+           if( e == ErrorState.NOMAL){
                myclass_Model.removeRow(row);
                 now.setText(Double.toString(cmh.getStduentCredit()));
             }else JOptionPane.showMessageDialog(null, e.getDesc()); 
@@ -337,12 +349,18 @@ public class StudentFrame extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jTabbedPane1StateChanged
 
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+        new UpdatePwFrame(id).setVisible(true);
+    }//GEN-LAST:event_jButton2ActionPerformed
+
     /**
      * @param args the command line arguments
      */
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;

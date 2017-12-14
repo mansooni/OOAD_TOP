@@ -18,7 +18,7 @@ import javax.swing.RowFilter;
 import javax.swing.WindowConstants;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
-import universityinformationsystem.ErrorCode;
+import universityinformationsystem.ErrorState;
 
 /**
  *
@@ -36,15 +36,10 @@ public class ClassManagerFrame extends javax.swing.JFrame {
     String no;
     String deptname;
     int row;
+    String id;
     
-    ResultSet rs = null;
-    Statement stmt = null;
-    Connection conn = null;  
-    String url = "jdbc:mysql://113.198.235.232:23306/UIS_TOP";
-    String id = "admin";
-    String password="123";
-    
-    public ClassManagerFrame() {
+    public ClassManagerFrame(String id) {
+        this.id = id;
         courseModel = new DefaultTableModel(course_colNames,0){
             @Override
             public boolean isCellEditable(int row, int column){
@@ -110,6 +105,7 @@ public class ClassManagerFrame extends javax.swing.JFrame {
         jTextField_iCoursename = new javax.swing.JTextField();
         jComboBox1 = new javax.swing.JComboBox<>();
         jButton_Close = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         openTable = new javax.swing.JTable();
@@ -207,6 +203,13 @@ public class ClassManagerFrame extends javax.swing.JFrame {
             }
         });
 
+        jButton3.setText("암호변경");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -256,7 +259,10 @@ public class ClassManagerFrame extends javax.swing.JFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(isOpenButton)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jButton_Close)))))
+                                .addComponent(jButton_Close))))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jButton3)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -288,7 +294,9 @@ public class ClassManagerFrame extends javax.swing.JFrame {
                     .addComponent(editButton)
                     .addComponent(isOpenButton)
                     .addComponent(jButton_Close))
-                .addContainerGap(75, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(jButton3)
+                .addContainerGap(34, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("강좌", jPanel1);
@@ -455,9 +463,9 @@ public class ClassManagerFrame extends javax.swing.JFrame {
            JOptionPane.showMessageDialog(null, "개설된 강좌는 삭제할 수 없습니다.");
         }
         else{
-                ErrorCode e;
+                ErrorState e;
                 e = cmh.deleteCourse(no);
-                if(e == ErrorCode.NOMAL)
+                if(e == ErrorState.NOMAL)
                     courseModel.removeRow(row);
                 else JOptionPane.showMessageDialog(null, e);
         }
@@ -531,9 +539,9 @@ public class ClassManagerFrame extends javax.swing.JFrame {
            return ;
        }
         else{
-              ErrorCode e;
+              ErrorState e;
                 e =cmh.updateClass(no, jTextField_Coursename.getText(), jTextField_de.getText(), jTextField_Credit.getText(), (String) jComboBox1.getSelectedItem());
-                if(e == ErrorCode.NOMAL){
+                if(e == ErrorState.NOMAL){
                     courseModel.setValueAt(jTextField_Coursename.getText(),  row, 1);
                     courseModel.setValueAt(jTextField_de.getText(),  row, 2);
                     courseModel.setValueAt(jTextField_Credit.getText(),  row, 3);
@@ -543,6 +551,11 @@ public class ClassManagerFrame extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_editButtonActionPerformed
 
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        // TODO add your handling code here:
+        new UpdatePwFrame(id).setVisible(true);
+    }//GEN-LAST:event_jButton3ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addButton;
@@ -551,6 +564,7 @@ public class ClassManagerFrame extends javax.swing.JFrame {
     private javax.swing.JButton isOpenButton;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton_Close;
     private javax.swing.JButton jButton_InquiryCourse;
     private javax.swing.JComboBox<String> jComboBox1;

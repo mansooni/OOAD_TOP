@@ -5,12 +5,12 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import universityinformationsystem.DBSystem;
-import universityinformationsystem.ErrorCode;
+import universityinformationsystem.ErrorState;
 import universityinformationsystem.ProjectHelper;
 
 public class OpenClassDB extends DBSystem{
     
-  public ErrorCode openClass(String courseno, String profno, String minenroll, String maxenroll) {
+  public ErrorState openClass(String courseno, String profno, String minenroll, String maxenroll) {
         String deptno,id="";
         String sql;
         try {
@@ -43,9 +43,9 @@ public class OpenClassDB extends DBSystem{
                           + "set chk = 'Y' "
                           + "where course_id = " + ProjectHelper.addQuotationStr(courseno);
                   st.executeUpdate(sql);
-                  return ErrorCode.NOMAL;
+                  return ErrorState.NOMAL;
       } catch (NumberFormatException | SQLException e) {
-          e.printStackTrace(); return ErrorCode.NORMALERROR;
+          e.printStackTrace(); return ErrorState.NORMALERROR;
           
       }
   }

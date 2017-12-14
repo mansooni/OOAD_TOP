@@ -3,7 +3,7 @@ package controller;
 
 import Model.*;
 import java.util.ArrayList;
-import universityinformationsystem.ErrorCode;
+import universityinformationsystem.ErrorState;
 
 public class JobManagementHandler {
      private StudentDB sd;
@@ -21,19 +21,19 @@ public class JobManagementHandler {
       return pd.addProfessor(name, residentno1, residentno2, dept);
   }
 
-  public ErrorCode deleteStudent(String no) {
+  public ErrorState deleteStudent(String no) {
       return sd.deleteStudent(no);
   }
 
-  public ErrorCode deleteProfessor(String no) {
+  public ErrorState deleteProfessor(String no) {
       return pd.deleteProfessor(no);
   }
 
-  public ErrorCode updateStudent(String no, String name, String residentno1,String residentno2, String dept) {
+  public ErrorState updateStudent(String no, String name, String residentno1,String residentno2, String dept) {
       return sd.updateStudent(no, name, residentno1, residentno2, dept);
   }
 
-  public ErrorCode updateProfessor(String no, String name, String residentno1, String residentno2, String dept) {
+  public ErrorState updateProfessor(String no, String name, String residentno1, String residentno2, String dept) {
        return pd.updateProfessor(no, name, residentno1, residentno2, dept);
   }
 

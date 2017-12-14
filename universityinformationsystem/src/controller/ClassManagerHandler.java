@@ -2,7 +2,7 @@ package controller;
 
 import Model.*;
 import java.util.ArrayList;
-import universityinformationsystem.ErrorCode;
+import universityinformationsystem.ErrorState;
 
 
 public class ClassManagerHandler {
@@ -26,11 +26,11 @@ public class ClassManagerHandler {
 
   }
 
-  public ErrorCode deleteCourse(String no) {
+  public ErrorState deleteCourse(String no) {
       return co.deleteCourse(no);
   }
 
-  public ErrorCode updateClass(String courseno, String coursename, String description, String credit, String dept) {
+  public ErrorState updateClass(String courseno, String coursename, String description, String credit, String dept) {
       return co.updatecourse(courseno, coursename, description, credit, dept);
   }
 public ArrayList inquiryProfessor_dept(String dept){
@@ -40,7 +40,7 @@ public ArrayList inquiryProfessor_dept(String dept){
   public ArrayList getClassData(String no) {
       return cl.getClassData(no);
   }
-  public ErrorCode openClass(String courseno, String profno, String minenroll, String maxenroll) {
+  public ErrorState openClass(String courseno, String profno, String minenroll, String maxenroll) {
     return cl.openClass(courseno, profno, minenroll, maxenroll);
   }
 

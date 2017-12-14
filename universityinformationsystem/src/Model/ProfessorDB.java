@@ -4,7 +4,7 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import universityinformationsystem.DBSystem;
-import universityinformationsystem.ErrorCode;
+import universityinformationsystem.ErrorState;
 import universityinformationsystem.ProjectHelper;
 
 
@@ -77,7 +77,7 @@ public class ProfessorDB extends DBSystem {
       return info;
   }
 
-  public ErrorCode deleteProfessor(String no) {
+  public ErrorState deleteProfessor(String no) {
             String sql=null;
                        sql= "delete from PROFESSOR where prof_id = "+ProjectHelper.addQuotationStr(no); 
             try {
@@ -85,35 +85,35 @@ public class ProfessorDB extends DBSystem {
                 sql ="delete from USER where id = "
                                      + ProjectHelper.addQuotationStr(no);
                   st.executeUpdate(sql);
-                return ErrorCode.NOMAL;
+                return ErrorState.NOMAL;
             } catch (SQLException ex) {
                         while (ex != null) {
                                 System.out.println ("SQLState: " + ex.getSQLState());  //Retrieves the SQLState for thisSQLExceptionobject
                                 System.out.println ("Message:  " + ex.getMessage());
                                 System.out.println ("Vendor:   " + ex.getErrorCode());
                              if(ex.getErrorCode()  == 1451){
-                                   return ErrorCode.ENROLLCLASSPROFESSOR;
+                                   return ErrorState.ENROLLCLASSPROFESSOR;
                                }
                                 ex = ex.getNextException();  //Adds anSQLExceptionobject to the end of the chain.
                         }
-                return ErrorCode.NORMALERROR;
+                return ErrorState.NORMALERROR;
             }
   }
 
-  public ErrorCode updateProfessor(String no, String name, String residentno1,String residentno2, String dept) {
+  public ErrorState updateProfessor(String no, String name, String residentno1,String residentno2, String dept) {
         if(name.isEmpty()){
            System.out.println("이름을 입력해주세요");
-           return ErrorCode.UPDATEERROR;
+           return ErrorState.UPDATEERROR;
        }
        if(!residentno1.matches("[(0-9)]{6}")){
            System.out.println("앞자리 번호 6자리 입력해주세요");
-           return ErrorCode.UPDATEERROR;
+           return ErrorState.UPDATEERROR;
        }
        
        
        if(!residentno2.matches("[(0-9)]{7}")){
            System.out.println("뒷자리 번호 6자리 입력해주세요");
-           return ErrorCode.UPDATEERROR;
+           return ErrorState.UPDATEERROR;
        }
         String residentno = residentno1 + "-" + residentno2;
         String deptno;
@@ -129,12 +129,12 @@ public class ProfessorDB extends DBSystem {
                                      +"residentno = " + ProjectHelper.addQuotationStr(residentno)+" "
                                      +"where prof_id = "+ProjectHelper.addQuotationStr(no);
             st.executeUpdate(sql);
-             return ErrorCode.NOMAL;
+             return ErrorState.NOMAL;
         }catch(SQLException ex){
                 System.out.println ("SQLState: " + ex.getSQLState());  //Retrieves the SQLState for thisSQLExceptionobject
                 System.out.println ("Message:  " + ex.getMessage());
                 System.out.println ("Vendor:   " + ex.getErrorCode()); 
-            return ErrorCode.UPDATEERROR;
+            return ErrorState.UPDATEERROR;
         }
   }
 

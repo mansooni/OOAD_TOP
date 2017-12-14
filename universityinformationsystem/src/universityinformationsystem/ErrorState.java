@@ -9,7 +9,7 @@ package universityinformationsystem;
  *
  * @author pk-dohyeon
  */
-public enum ErrorCode {
+public enum ErrorState {
     NOMAL(0,"정상"),
     NORMALERROR(1,"에러"),
     OVERLAPENROLL(2,"중복된 강의는 수강신청이 불가능 합니다."),
@@ -29,7 +29,7 @@ public enum ErrorCode {
         return desc;
     }
 
-    private ErrorCode(int code, String desc) {
+    private ErrorState(int code, String desc) {
         this.code = code;
         this.desc = desc;
     }

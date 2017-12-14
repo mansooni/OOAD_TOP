@@ -7,7 +7,7 @@ package controller;
 
 import Model.StudentManager;
 import java.util.ArrayList;
-import universityinformationsystem.ErrorCode;
+import universityinformationsystem.ErrorState;
 import universityinformationsystem.Scoreinfo;
 
 /**
@@ -28,7 +28,7 @@ public class StudentHandler{
     public ArrayList getMyClass(){
         return sm.getMyClass();
     }
-     public ErrorCode myClassEnrollment(String class_id){
+     public ErrorState myClassEnrollment(String class_id){
          return sm.myClassEnrollment(class_id);
      }
      public double getStduentCredit(){
@@ -37,7 +37,7 @@ public class StudentHandler{
         public Scoreinfo inquiryScore() {
          return sm.inquiryScore();
         }
-     public ErrorCode cancle(String class_id){
+     public ErrorState cancle(String class_id){
          return sm.cancel(class_id);
      }
 }

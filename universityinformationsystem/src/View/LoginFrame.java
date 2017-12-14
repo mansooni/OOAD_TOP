@@ -127,14 +127,14 @@ public class LoginFrame extends javax.swing.JFrame {
                 this.setVisible(false);
         {
             try {
-                new JobManagementFrame().setVisible(true);
+                new JobManagementFrame(li.id).setVisible(true);
             } catch (SQLException ex) {
                 Logger.getLogger(LoginFrame.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
                 break;
             case 2:
-                new ClassManagerFrame().setVisible(true);
+                new ClassManagerFrame(li.id).setVisible(true);
                 this.setVisible(false);
                 JOptionPane.showMessageDialog(null, "수업 담당자 로그인");
                 break;

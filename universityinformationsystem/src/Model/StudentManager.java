@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import universityinformationsystem.DBSystem;
-import universityinformationsystem.ErrorCode;
+import universityinformationsystem.ErrorState;
 import universityinformationsystem.ProjectHelper;
 import universityinformationsystem.Scoreinfo;
 
@@ -132,14 +132,14 @@ public class StudentManager  extends DBSystem {
             return null;
     }
 
-    public ErrorCode myClassEnrollment(String class_id) {
+    public ErrorState myClassEnrollment(String class_id) {
         String sql;
         sql = "select * from TAKES where class_id = " + ProjectHelper.addQuotationStr(class_id)
                 +" and stud_id = " + ProjectHelper.addQuotationStr(id);
         try {
             rs = st.executeQuery(sql);
             if(rs.next()){
-                return ErrorCode.OVERLAPENROLL;
+                return ErrorState.OVERLAPENROLL;
             }
             sql = "select count(stud_id),maxenroll from TAKES join CLASS USING(class_id) where class_id = " + ProjectHelper.addQuotationStr(class_id);
             rs = st.executeQuery(sql);
@@ -147,7 +147,7 @@ public class StudentManager  extends DBSystem {
                 int count = Integer.parseInt(rs.getString("count(stud_id)"));
                 int maxenroll = Integer.parseInt(rs.getString("maxenroll"));
                 if(count >= maxenroll){
-                    return ErrorCode.MAXENROLL;
+                    return ErrorState.MAXENROLL;
                 }
             }
             
@@ -162,26 +162,26 @@ public class StudentManager  extends DBSystem {
             double stduetCredit = getStduentCredit();
             double temp = stduetCredit + Double.parseDouble(credit);
             if(temp > 18.0){
-                return ErrorCode.CREDITEXCESS;
+                return ErrorState.CREDITEXCESS;
             }
             sql = "insert into TAKES values("
                 +ProjectHelper.addQuotationStr(id)+", "
                 +ProjectHelper.addQuotationStr(class_id)+", "
                 +ProjectHelper.addQuotationStr("N")+")";
              st.executeUpdate(sql);
-             return ErrorCode.NOMAL;
+             return ErrorState.NOMAL;
         }  catch (SQLException ex) {
             Logger.getLogger(StudentManager.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return ErrorCode.NORMALERROR;
+        return ErrorState.NORMALERROR;
     }
 
-    public ErrorCode cancel(String class_id) {
+    public ErrorState cancel(String class_id) {
         String sql=null;
         sql= "delete from TAKES where class_id = "+ProjectHelper.addQuotationStr(class_id); 
          try {
                 st.executeUpdate(sql);
-                return ErrorCode.NOMAL;
+                return ErrorState.NOMAL;
          }catch (SQLException ex) {
                         while (ex != null) {
                                 System.out.println ("SQLState: " + ex.getSQLState());  //Retrieves the SQLState for thisSQLExceptionobject
@@ -189,7 +189,7 @@ public class StudentManager  extends DBSystem {
                                 System.out.println ("Vendor:   " + ex.getErrorCode());
                                 ex = ex.getNextException();  //Adds anSQLExceptionobject to the end of the chain.
                         }
-                        return ErrorCode.NORMALERROR;
+                        return ErrorState.NORMALERROR;
             }
     }
 }

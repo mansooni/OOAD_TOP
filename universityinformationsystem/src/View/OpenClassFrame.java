@@ -9,7 +9,7 @@ import controller.ClassManagerHandler;
 import java.util.ArrayList;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
-import universityinformationsystem.ErrorCode;
+import universityinformationsystem.ErrorState;
 
 /**
  *
@@ -139,8 +139,8 @@ public class OpenClassFrame extends javax.swing.JFrame {
            return;
        }
         String[] temp = jComboBox_prof.getSelectedItem().toString().split(", ");
-        ErrorCode e = cmh.openClass(courseno, temp[0], jTextField2.getText(), jTextField3.getText());
-        if(e == ErrorCode.NOMAL){
+        ErrorState e = cmh.openClass(courseno, temp[0], jTextField2.getText(), jTextField3.getText());
+        if(e == ErrorState.NOMAL){
             cmf.courseModel.setValueAt("Y", cmf.row, 5);
             this.setVisible(false);
         } else JOptionPane.showMessageDialog(null, e);

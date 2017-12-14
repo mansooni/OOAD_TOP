@@ -5,7 +5,7 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import universityinformationsystem.DBSystem;
-import universityinformationsystem.ErrorCode;
+import universityinformationsystem.ErrorState;
 import universityinformationsystem.ProjectHelper;
 
 public class CourseDB extends DBSystem{
@@ -78,19 +78,19 @@ public class CourseDB extends DBSystem{
       
   }
 
-  public ErrorCode deleteCourse(String no) {
+  public ErrorState deleteCourse(String no) {
       String sql=null;
                        sql= "delete from COURSE where course_id = "+ProjectHelper.addQuotationStr(no); 
             try {
                 st.executeUpdate(sql);
-                return ErrorCode.NOMAL;
+                return ErrorState.NOMAL;
             } catch (SQLException ex) {
-                ex.printStackTrace();disconnectDB(); return ErrorCode.NORMALERROR;
+                ex.printStackTrace();disconnectDB(); return ErrorState.NORMALERROR;
             }
        
   }
 
-  public ErrorCode updatecourse(String courseno, String coursename, String description, String credit, String dept) {
+  public ErrorState updatecourse(String courseno, String coursename, String description, String credit, String dept) {
      
         String deptno;
         String sql=null;
@@ -107,7 +107,7 @@ public class CourseDB extends DBSystem{
                                      
                                      +"where course_id = "+ProjectHelper.addQuotationStr(courseno);
             st.executeUpdate(sql);
-            return ErrorCode.NOMAL;
-        }catch(SQLException ex){ex.printStackTrace(); return ErrorCode.NORMALERROR;}
+            return ErrorState.NOMAL;
+        }catch(SQLException ex){ex.printStackTrace(); return ErrorState.NORMALERROR;}
   }
 }
