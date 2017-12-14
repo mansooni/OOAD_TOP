@@ -5,114 +5,87 @@
  */
 package professor;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
+import controller.professorHandler;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+import universityinformationsystem.DBSystem;
 
 /**
  *
  * @author gawon
  */
-public class professorManager {
+public class professorManager extends DBSystem {
 
-    String classnumm[] = {};
     ResultSet rs = null;
-    Statement stmt = null;
-    Connection conn = null;
 
-    String url = "jdbc:mysql://113.198.235.232:23306/UIS_TOP";
-    String id = "admin";
-    String password = "123";
-
-    public void getAttendance(JList list) {
-
+   
+    public ArrayList getAttendance(String prof_id){
+        ArrayList<String[]> infoArray = new ArrayList<>();
         try {
-            DefaultListModel classlistModel = new DefaultListModel();
 
-            Class.forName("com.mysql.jdbc.Driver");
-            conn = DriverManager.getConnection(url, id, password);
-            stmt = conn.createStatement();
-            rs = stmt.executeQuery("select classnumm from open where prof_id='P001'");
+            rs = st.executeQuery("select * from CLASS CL LEFT OUTER JOIN COURSE CO ON CL.COURSE_ID = CO.COURSE_ID where prof_id='" + prof_id + "'");
 
             while (rs.next()) {
-                String classlist = rs.getNString("classnumm");
-                classlistModel.addElement(classlist);
+                String classid = rs.getNString("class_id");
+                String classlist = rs.getNString("COURSE_NAME");
+                String temp[] = {classid,classlist};
+                infoArray.add(temp);
             }
 
-            list.setModel(classlistModel);
-
-        } catch (SQLException | ClassNotFoundException ex) {
+        } catch (SQLException ex) {
             Logger.getLogger(professorManager.class.getName()).log(Level.SEVERE, null, ex);
         }
+        return infoArray;
     }
 
-    public void getnamelist(String getclassnum, JTable table) {
-
-        DefaultTableModel model = (DefaultTableModel) table.getModel();
-
+    public ArrayList getnamelist(String class_id) {
+        ArrayList<String[]> infoArray = new ArrayList<>();
         try {
-            Class.forName("com.mysql.jdbc.Driver");
-            conn = DriverManager.getConnection(url, id, password);
-            stmt = conn.createStatement();
-            rs = stmt.executeQuery("select stu_name, score ,stu_id from enrollment where classnum='" + getclassnum + "'");
+            String sql = "SELECT D.DEPT_NAME, T.STUD_ID, ST.STUD_NAME,T.GRADE "
+                    + "FROM CLASS CL right OUTER JOIN TAKES T ON CL.CLASS_ID = T.CLASS_ID "
+                    + "left outer join STUDENT ST ON T.STUD_ID = ST.STUD_ID "
+                    + "left outer join DEPT D ON D.DEPT_ID = ST.DEPT_ID "
+                    + "where T.class_id = '" + class_id + "'";
+            rs = st.executeQuery(sql);
 
             while (rs.next()) {
-                String stu_name = rs.getString("stu_name");
-                String score = rs.getString("score");
-                String stu_id = rs.getString("stu_id");
-                System.out.println(stu_id + "," + stu_name + "," + score);
-
-                model.addRow(new Object[]{stu_id, stu_name, score});
+                String dname = rs.getString("DEPT_NAME");
+                String sid = rs.getString("STUD_ID");
+                String sname = rs.getString("STUD_NAME");
+                String grade = rs.getNString("GRADE");
+                String temp[] = {dname, sid, sname, grade};
+                infoArray.add(temp);
             }
 
-            table.setModel(model);
-
-        } catch (ClassNotFoundException | SQLException ex) {
+        } catch (SQLException ex) {
             Logger.getLogger(professorManager.class.getName()).log(Level.SEVERE, null, ex);
         }
+        return infoArray;
     }
 
-    public void inputscore(String getclassnum, JTable table) {
-        DefaultTableModel model = (DefaultTableModel) table.getModel();
-
-        System.out.println(getclassnum);
+    public boolean inputscore(String class_id, String[] stud_id, String[] grade, int row) {
 
         try {
-            Class.forName("com.mysql.jdbc.Driver");
-            conn = DriverManager.getConnection(url, id, password);
-            stmt = conn.createStatement();
 
-            for (int count = 0; count < model.getRowCount(); count++) {
-
-                String stu_id = model.getValueAt(count, 0).toString();
-                String score = model.getValueAt(count, 2).toString();
-
-                System.out.println(stu_id + " & " + score);
-
-                if (score != "-") {
-                    String inputdata = "update enrollment set score='" + score + "' where stu_id='" + stu_id + "'and classnum='" + getclassnum + "'";
-                    stmt.executeUpdate(inputdata);
+            for (int count = 0; count < row; count++) {
+                if (grade[count] != "N") {
+                    String inputdata = "update TAKES set GRADE='" + grade[count] + "' where STUD_ID='" + stud_id[count] + "'and CLASS_ID='" + class_id + "'";
+                    st.executeUpdate(inputdata);
                 }
 
             }
 
-            model.setNumRows(0);
-
-            getnamelist(getclassnum, table);
-
-        } catch (ClassNotFoundException | SQLException ex) {
+        } catch (SQLException ex) {
             Logger.getLogger(professorManager.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
         }
+        return true;
     }
-
 }

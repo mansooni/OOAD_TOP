@@ -5,9 +5,15 @@
  */
 package professor;
 
+import Model.*;
+import controller.professorHandler;
+import java.util.ArrayList;
+import java.util.Iterator;
 import javax.swing.DefaultCellEditor;
+import javax.swing.DefaultListModel;
 import javax.swing.JComboBox;
 import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 
 /**
@@ -15,15 +21,16 @@ import javax.swing.table.TableColumn;
  * @author gawon
  */
 public class professorFrame extends javax.swing.JFrame {
-    professorManager pm = new professorManager();
-    int flag = 1;
-    String move;
+
+    professorHandler pH = new professorHandler();
+    String cid;
+
     /**
      * Creates new form professorFrame
      */
     public professorFrame() {
         initComponents();
-        pm.getAttendance(classlist);
+        getAttdance();
     }
 
     /**
@@ -65,14 +72,14 @@ public class professorFrame extends javax.swing.JFrame {
 
             },
             new String [] {
-                "학번", "이름", "성적"
+                "학과", "학번", "이름", "성적"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                true, false, true
+                false, false, false, true
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -85,7 +92,7 @@ public class professorFrame extends javax.swing.JFrame {
         });
         jScrollPane2.setViewportView(scoretable);
         if (scoretable.getColumnModel().getColumnCount() > 0) {
-            scoretable.getColumnModel().getColumn(2).setCellEditor(new DefaultCellEditor(jcb)
+            scoretable.getColumnModel().getColumn(3).setCellEditor(new DefaultCellEditor(jcb)
             );
         }
 
@@ -166,23 +173,57 @@ public class professorFrame extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    public void getAttdance() {
+        ArrayList<String[]> info;
+
+        DefaultListModel lModel = new DefaultListModel();
+        info = pH.getAttandance();
+
+        for (String[] s : info) {
+            lModel.addElement(s[1]);
+        }
+        classlist.setModel(lModel);
+    }
+
     private void classlistMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_classlistMouseClicked
         // TODO add your handling code here:
-        String move = classlist.getSelectedValue();
+        DefaultTableModel tModel = (DefaultTableModel) scoretable.getModel();
+        String cid = null;
+        String name = classlist.getSelectedValue();
         
-        if(flag == 1){
-            pm.getnamelist(move, scoretable);
+        
+       tModel.setNumRows(0);
+        
+        ArrayList <String[]> classid = pH.getAttandance();
+        
+        for (String[] s : classid) {
+           
+            if (s[1].equals(name)) {
+                cid = s[0];
+            }
         }
-        flag++;
-        
-        
+
+        ArrayList <String[]> namelist = pH.getnamelist(cid);
+
+        for (String[] s : namelist) {
+            tModel.addRow(s);
+        }
+        scoretable.setModel(tModel);
     }//GEN-LAST:event_classlistMouseClicked
 
     private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
         // TODO add your handling code here:
-        String move = classlist.getSelectedValue();
-        
-        pm.inputscore(move, scoretable);
+        DefaultTableModel tModel = (DefaultTableModel) scoretable.getModel();
+        String cid = classlist.getSelectedValue().substring(1);
+        String stud_id[] = {}, grade[] = {};
+        for (int i = 0; i < scoretable.getRowCount(); i++) {
+            stud_id[i] = scoretable.getValueAt(i, 1).toString();
+            grade[i] = scoretable.getValueAt(i, 3).toString();
+        }
+        pH.inputscore(cid, stud_id, grade, scoretable.getRowCount());
+        tModel.getRowCount();
+        scoretable.setModel(tModel);
+        pH.getAttandance();
     }//GEN-LAST:event_jButton1MouseClicked
 
     /**
@@ -211,11 +252,19 @@ public class professorFrame extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(professorFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new professorFrame().setVisible(true);
+
             }
         });
     }
