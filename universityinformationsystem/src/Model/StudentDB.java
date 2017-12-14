@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.logging.Logger;
 import universityinformationsystem.DBSystem;
+import universityinformationsystem.ErrorState;
 import universityinformationsystem.ProjectHelper;
 
 
@@ -56,50 +57,72 @@ public class StudentDB extends DBSystem {
                                      + ProjectHelper.addQuotationStr(name)+", "
                                      + ProjectHelper.addQuotationStr(residentno)+", "
                                      +ProjectHelper.addQuotationStr(deptno)+","
+                                     +ProjectHelper.addQuotationStr("N")+","
                                        +ProjectHelper.addQuotationStr("N")+")";
                             
 
                   st.executeUpdate(sql);
-                  System.out.println("추가");
+                  System.out.println("학생 추가");
                   
                   sql ="insert into USER values("
                                      + ProjectHelper.addQuotationStr(id)+",  "
-                                     + ProjectHelper.addQuotationStr(residentno1)+")";
+                                     + ProjectHelper.addQuotationStr(residentno2)+")";
                   st.executeUpdate(sql);
-      } catch (Exception e) {
-          e.printStackTrace();
-          return null;
-      }
-      String[] info = {id,name,residentno,dept};
+                  String[] info = {id,name,residentno,dept};
       
       return info;
+      } catch (SQLException ex) {
+                         while (ex != null) {
+                                System.out.println ("SQLState: " + ex.getSQLState());  //Retrieves the SQLState for thisSQLExceptionobject
+                                System.out.println ("Message:  " + ex.getMessage());
+                                System.out.println ("Vendor:   " + ex.getErrorCode());
+                             if(ex.getErrorCode()  == 1062){
+                                   System.err.println("중복된 주민번호가 있습니다. : " + ex.getErrorCode());
+                               }
+                                ex = ex.getNextException();  //Adds anSQLExceptionobject to the end of the chain.
+                        }
+          return null;
+      }
+      
   }
 
-  public boolean deleteStudent(String no) {
+  public ErrorState deleteStudent(String no) {
       String sql=null;
                        sql= "delete from STUDENT where stud_id = "+ProjectHelper.addQuotationStr(no); 
             try {
                 st.executeUpdate(sql);
+                sql ="delete from USER where id = "
+                                     + ProjectHelper.addQuotationStr(no);
+                  st.executeUpdate(sql);
+                  return ErrorState.NOMAL;
             } catch (SQLException ex) {
-                ex.printStackTrace(); return false;
+                while (ex != null) {
+                                System.out.println ("SQLState: " + ex.getSQLState());  //R                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     etrieves the SQLState for thisSQLExceptionobject
+                                System.out.println ("Message:  " + ex.getMessage());
+                                System.out.println ("Vendor:   " + ex.getErrorCode());
+                             if(ex.getErrorCode()  == 1451){
+                                   return ErrorState.ENROLLCLASSSTUDENT;
+                               }
+                                ex = ex.getNextException();  //Adds anSQLExceptionobject to the end of the chain.
+                        }
+                return ErrorState.NORMALERROR;
             }
-       return true;
   }
 
-  public boolean updateStudent(String no, String name, String residentno1,String residentno2, String dept) {
+  public ErrorState updateStudent(String no, String name, String residentno1,String residentno2, String dept) {
         if(name.isEmpty()){
            System.out.println("이름을 입력해주세요");
-           return false;
+           return ErrorState.UPDATEERROR;
        }
        if(!residentno1.matches("[(0-9)]{6}")){
            System.out.println("앞자리 번호 6자리 입력해주세요");
-           return false;
+           return ErrorState.UPDATEERROR;
        }
        
        
        if(!residentno2.matches("[(0-9)]{7}")){
            System.out.println("뒷자리 번호 6자리 입력해주세요");
-           return false;
+           return ErrorState.UPDATEERROR;
        }
         String residentno = residentno1 + "-" + residentno2;
         String deptno;
@@ -115,8 +138,8 @@ public class StudentDB extends DBSystem {
                                      +"residentno = " + ProjectHelper.addQuotationStr(residentno)+" "
                                      +"where stud_id = "+ProjectHelper.addQuotationStr(no);
             st.executeUpdate(sql);
-        }catch(Exception ex){ex.printStackTrace(); return false;}
-        return true;
+            return ErrorState.NOMAL;
+        }catch(SQLException ex){ex.printStackTrace(); return ErrorState.UPDATEERROR;}
   }
 
   public ArrayList inquiryStudent(String no, String name) {       
@@ -134,7 +157,7 @@ public class StudentDB extends DBSystem {
                       String temp [] = {stud_id,stud_name,residentno,dept_name,chk};
                       infoArray.add(temp);
                   }
-      }catch(Exception e){e.printStackTrace(); return null;}
+      }catch(SQLException e){e.printStackTrace(); return null;}
       return infoArray;
   }
 

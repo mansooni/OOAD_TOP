@@ -9,7 +9,9 @@ import controller.*;
 import static java.lang.System.exit;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import universityinformationsystem.ErrorState;
 
 /**
  *
@@ -23,16 +25,33 @@ public class JobManagementFrame extends javax.swing.JFrame {
     private String no=null,name;
     private int row;
     private String residentno[];
+    String id;
     /**
      * Creates new form BachelorManageementHandler
+     * @throws java.sql.SQLException
      */
-    public JobManagementFrame() throws SQLException {
-        studModel = new DefaultTableModel(stud_colNames,0);
-        profModel = new DefaultTableModel(prof_colNames,0);
+    public JobManagementFrame(String id) throws SQLException {
+        this.id = id;
+        studModel = new DefaultTableModel(stud_colNames,0){
+            @Override
+            public boolean isCellEditable(int row, int column){
+                return false;
+            }
+        };
+        profModel = new DefaultTableModel(prof_colNames,0){
+            @Override
+            public boolean isCellEditable(int row, int column){
+                return false;
+            }
+        };
         initComponents();
-        jh = new JobManagementHandler();
+            jh = new JobManagementHandler();
+            ArrayList <String[]> infoArray;
+        infoArray = jh.inquiryStudent("","");
+        for(String[] s: infoArray)
+            studModel.addRow(s);
     }
-
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -63,6 +82,7 @@ public class JobManagementFrame extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         jTextField_Siname = new javax.swing.JTextField();
         jButton_close = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
         ProfessorPanel = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTable_Professor = new javax.swing.JTable();
@@ -147,6 +167,13 @@ public class JobManagementFrame extends javax.swing.JFrame {
             }
         });
 
+        jButton1.setText("암호변경");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout studentPanelLayout = new javax.swing.GroupLayout(studentPanel);
         studentPanel.setLayout(studentPanelLayout);
         studentPanelLayout.setHorizontalGroup(
@@ -160,6 +187,16 @@ public class JobManagementFrame extends javax.swing.JFrame {
                         .addComponent(jScrollPane3)
                         .addGap(5, 5, 5))
                     .addGroup(studentPanelLayout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jTextField_Sino, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jTextField_Siname, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButton_Sinquiry))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, studentPanelLayout.createSequentialGroup()
                         .addComponent(jLabel4)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jTextField_Sname, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -182,15 +219,8 @@ public class JobManagementFrame extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton_close))
                     .addGroup(studentPanelLayout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextField_Sino, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextField_Siname, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton_Sinquiry))))
+                        .addComponent(jButton1)
+                        .addGap(0, 0, Short.MAX_VALUE))))
         );
         studentPanelLayout.setVerticalGroup(
             studentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -203,26 +233,25 @@ public class JobManagementFrame extends javax.swing.JFrame {
                     .addComponent(jButton_Sinquiry))
                 .addGap(22, 22, 22)
                 .addGroup(studentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(studentPanelLayout.createSequentialGroup()
-                        .addComponent(jLabel_no)
-                        .addContainerGap())
-                    .addGroup(studentPanelLayout.createSequentialGroup()
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 318, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 17, Short.MAX_VALUE)
-                        .addGroup(studentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, studentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(jLabel5)
-                                .addComponent(jTextField_Sresidentno1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jTextField_Sresidentno2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jLabel3)
-                                .addComponent(jLabel4)
-                                .addComponent(jTextField_Sname))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, studentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(jButton_close)
-                                .addComponent(jButton_Supdate)
-                                .addComponent(jButton_Sadd)
-                                .addComponent(jButton_Sremove)
-                                .addComponent(jComboBox_Sdept, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))))))
+                    .addComponent(jLabel_no)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 318, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 28, Short.MAX_VALUE)
+                .addComponent(jButton1)
+                .addGap(25, 25, 25)
+                .addGroup(studentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, studentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel5)
+                        .addComponent(jTextField_Sresidentno1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jTextField_Sresidentno2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel3)
+                        .addComponent(jLabel4)
+                        .addComponent(jTextField_Sname))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, studentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jButton_close)
+                        .addComponent(jButton_Supdate)
+                        .addComponent(jButton_Sadd)
+                        .addComponent(jButton_Sremove)
+                        .addComponent(jComboBox_Sdept, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))))
         );
 
         tap_Bachelor.addTab("학생", studentPanel);
@@ -373,11 +402,29 @@ public class JobManagementFrame extends javax.swing.JFrame {
 
     private void tap_BachelorStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_tap_BachelorStateChanged
         // TODO add your handling code here:
+        if(tap_Bachelor.getSelectedIndex() == 1){
+            profModel = new DefaultTableModel(prof_colNames,0){
+            @Override
+            public boolean isCellEditable(int row, int column){
+                return false;
+            }
+        };
+        ArrayList <String[]> infoArray;
+        infoArray = jh.inquiryProfessor("","");
+        for(String[] s: infoArray)
+            profModel.addRow(s);
+        jTable_Professor.setModel(profModel);
+        }
     }//GEN-LAST:event_tap_BachelorStateChanged
 
     private void jButton_PinquiryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_PinquiryActionPerformed
         // TODO add your handling code here:
-        profModel = new DefaultTableModel(prof_colNames,0);
+        profModel = new DefaultTableModel(prof_colNames,0){
+            @Override
+            public boolean isCellEditable(int row, int column){
+                return false;
+            }
+        };
         ArrayList <String[]> infoArray;
         infoArray = jh.inquiryProfessor(jTextField_Pino.getText(),jTextField_Piname.getText());
         for(String[] s: infoArray)
@@ -409,7 +456,12 @@ public class JobManagementFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton_closeActionPerformed
 
     private void jButton_SinquiryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_SinquiryActionPerformed
-        studModel = new DefaultTableModel(stud_colNames,0);
+        studModel = new DefaultTableModel(stud_colNames,0){
+            @Override
+            public boolean isCellEditable(int row, int column){
+                return false;
+            }
+        };
         ArrayList <String[]> infoArray;
         infoArray = jh.inquiryStudent(jTextField_Sino.getText(),jTextField_Siname.getText());
         for(String[] s: infoArray)
@@ -420,13 +472,15 @@ public class JobManagementFrame extends javax.swing.JFrame {
 
     private void jButton_SupdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_SupdateActionPerformed
 
-    if(jh.updateStudent(no, jTextField_Sname.getText(),jTextField_Sresidentno1.getText(),jTextField_Sresidentno2.getText(),(String)jComboBox_Sdept.getSelectedItem())){
+    ErrorState e =jh.updateStudent(no, jTextField_Sname.getText(),jTextField_Sresidentno1.getText(),jTextField_Sresidentno2.getText(),(String)jComboBox_Sdept.getSelectedItem());
+   if(e == ErrorState.NOMAL) {
         String temp = jTextField_Sresidentno1.getText() + "-" + jTextField_Sresidentno2.getText();
         studModel.setValueAt(no, row, 0);
         studModel.setValueAt(name, row, 1);
         studModel.setValueAt(temp, row, 2);
         studModel.setValueAt((String)jComboBox_Sdept.getSelectedItem(), row, 3);
     }
+   else JOptionPane.showMessageDialog(null, e.getDesc());
     }//GEN-LAST:event_jButton_SupdateActionPerformed
 
     private void jButton_SaddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_SaddActionPerformed
@@ -435,16 +489,16 @@ public class JobManagementFrame extends javax.swing.JFrame {
         if(info != null){
             studModel.addRow(info);
         }
-        else System.out.println("등록 오류");
+        else JOptionPane.showMessageDialog(null, "등록오류");
         
     }//GEN-LAST:event_jButton_SaddActionPerformed
 
     private void jButton_SremoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_SremoveActionPerformed
 
-            boolean deletechk = jh.deleteStudent(no);
-            if(deletechk) 
+            ErrorState e = jh.deleteStudent(no);
+            if(e == ErrorState.NOMAL) 
                 studModel.removeRow(row);
-            
+            else JOptionPane.showMessageDialog(null, e.getDesc());
     }//GEN-LAST:event_jButton_SremoveActionPerformed
 
     private void jTable_StudentMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable_StudentMouseClicked
@@ -460,13 +514,14 @@ public class JobManagementFrame extends javax.swing.JFrame {
         jTextField_Sname.setText(name);
         jTextField_Sresidentno1.setText(residentno[0]);
         jTextField_Sresidentno2.setText(residentno[1]);
-
     }//GEN-LAST:event_jTable_StudentMouseClicked
 
     private void jButton_PdeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_PdeleteActionPerformed
-                    boolean deletechk = jh.deleteProfessor(no);
-            if(deletechk) 
+                    
+        ErrorState e = jh.deleteProfessor(no);
+            if(e == ErrorState.NOMAL) 
                 profModel.removeRow(row);
+            else JOptionPane.showMessageDialog(null, e.getDesc());
     }//GEN-LAST:event_jButton_PdeleteActionPerformed
 
     private void jButton_PaddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_PaddActionPerformed
@@ -475,24 +530,32 @@ public class JobManagementFrame extends javax.swing.JFrame {
         if(info != null){
             profModel.addRow(info);
         }
-        else System.out.println("등록 오류");
+        else JOptionPane.showMessageDialog(null, "등록오류");
     }//GEN-LAST:event_jButton_PaddActionPerformed
 
     private void jButton_PupdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_PupdateActionPerformed
         // TODO add your handling code here:
-            if(jh.updateProfessor(no, jTextField_Pname.getText(),jTextField_Presidentno1.getText(),jTextField_Presidentno2.getText(),(String)jComboBox_Pdept.getSelectedItem())){
+        ErrorState e = jh.updateProfessor(no, jTextField_Pname.getText(),jTextField_Presidentno1.getText(),jTextField_Presidentno2.getText(),(String)jComboBox_Pdept.getSelectedItem());
+        if(e == ErrorState.NOMAL){
         String temp = jTextField_Presidentno1.getText() + "-" + jTextField_Presidentno2.getText();
         profModel.setValueAt(no, row, 0);
         profModel.setValueAt(jTextField_Pname.getText(), row, 1);
         profModel.setValueAt(temp, row, 2);
         profModel.setValueAt((String)jComboBox_Pdept.getSelectedItem(), row, 3);
        }
+        else JOptionPane.showMessageDialog(null, e.getDesc());
     }//GEN-LAST:event_jButton_PupdateActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        new UpdatePwFrame(id);
+    }//GEN-LAST:event_jButton1ActionPerformed
 
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel ProfessorPanel;
+    private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton_Padd;
     private javax.swing.JButton jButton_Pclose;
     private javax.swing.JButton jButton_Pdelete;

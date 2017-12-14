@@ -20,6 +20,23 @@ import universityinformationsystem.ProjectHelper;
  */
 public class LoginSystem extends DBSystem{
     private LoginInfo li;
+    public LoginInfo updatepw(String id, String newpw){
+        li = new LoginInfo();
+        ResultSet rs;
+        try {
+
+            String sql = "update USER set pw = " + ProjectHelper.addQuotationStr(newpw) +" where id = " + ProjectHelper.addQuotationStr(id);
+                st.executeUpdate(sql);
+                     li.state =7;
+            return li;
+                    
+        }catch (SQLException ex) {
+            Logger.getLogger(LoginSystem.class.getName()).log(Level.SEVERE, null, ex);
+            li.state =0;
+            return li;
+        }
+        
+    }
     public LoginInfo login(String id, String pw){
         li = new LoginInfo();
         ResultSet rs;

@@ -2,21 +2,15 @@ package Model;
 
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import universityinformationsystem.DBSystem;
+import universityinformationsystem.ErrorState;
 import universityinformationsystem.ProjectHelper;
 
 public class OpenClassDB extends DBSystem{
     
-  public boolean openClass(String courseno, String profno, String minenroll, String maxenroll) {
-      if(minenroll.isEmpty()){
-           System.out.println("최소인원을 입력해주세요");
-           return false;
-       }
-      if(maxenroll.isEmpty()){
-           System.out.println("최대인원을 입력해주세요");
-           return false;
-       }
+  public ErrorState openClass(String courseno, String profno, String minenroll, String maxenroll) {
         String deptno,id="";
         String sql;
         try {
@@ -49,12 +43,11 @@ public class OpenClassDB extends DBSystem{
                           + "set chk = 'Y' "
                           + "where course_id = " + ProjectHelper.addQuotationStr(courseno);
                   st.executeUpdate(sql);
-                  System.out.println("개설완료");
-      } catch (Exception e) {
-          e.printStackTrace(); return false;
+                  return ErrorState.NOMAL;
+      } catch (NumberFormatException | SQLException e) {
+          e.printStackTrace(); return ErrorState.NORMALERROR;
           
       }
-      return true;
   }
   public ArrayList getClassData(String no){
       ArrayList<String[]> infoarray = new ArrayList<>();
@@ -72,7 +65,7 @@ public class OpenClassDB extends DBSystem{
                       String temp [] = {class_id, course_name,prof_id,minenroll,maxenroll};
                       infoarray.add(temp);
                   }
-      }catch(Exception e){e.printStackTrace(); disconnectDB();return null;}
+      }catch(SQLException e){e.printStackTrace(); disconnectDB();return null;}
        return infoarray;
 }
 }
