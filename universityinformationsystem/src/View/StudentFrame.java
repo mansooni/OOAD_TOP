@@ -333,6 +333,7 @@ public class StudentFrame extends javax.swing.JFrame {
                 grade_Model.addRow(s);
             }
            jTable2.setModel(grade_Model);
+           jLabel8.setText(Double.toString(si.grade));
         }
     }//GEN-LAST:event_jTabbedPane1StateChanged
 
